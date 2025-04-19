@@ -3,577 +3,303 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Factory | Batch-Serial Generator</title>
+  <title>Component QR Generator with Batch Numbers</title>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --primary: #4361ee;
-      --secondary: #3f37c9;
-      --accent: #4895ef;
-      --light: #f8f9fa;
-      --dark: #212529;
-      --success: #4cc9f0;
-      --warning: #f72585;
-    }
-    
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 100vh;
-      color: var(--dark);
-      line-height: 1.6;
-    }
-    
-    .container {
-      max-width: 1200px;
+      font-family: Arial, sans-serif;
+      max-width: 600px;
       margin: 0 auto;
-      padding: 2rem;
+      padding: 20px;
+      background-color: #f5f5f5;
     }
-    
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
-      animation: fadeIn 0.8s ease-out;
-    }
-    
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-      background: linear-gradient(to right, var(--primary), var(--accent));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      font-weight: 700;
-    }
-    
-    .subtitle {
-      color: var(--dark);
-      opacity: 0.8;
-      font-weight: 300;
-    }
-    
-    .card {
+    .container {
       background: white;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      margin-bottom: 2rem;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      animation: slideUp 0.6s ease-out;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 25px;
     }
-    
     .form-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 20px;
     }
-    
     label {
       display: block;
-      margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: var(--dark);
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #34495e;
     }
-    
-    input, select {
+    select, input {
       width: 100%;
-      padding: 12px 15px;
-      border: 2px solid #e9ecef;
-      border-radius: 8px;
-      font-size: 1rem;
-      transition: all 0.3s ease;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 16px;
     }
-    
-    input:focus, select:focus {
-      border-color: var(--accent);
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
     }
-    
-    .btn {
-      display: inline-block;
-      padding: 12px 24px;
-      background: var(--primary);
+    button {
+      background-color: #3498db;
       color: white;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 500;
+      padding: 12px 20px;
+      border-radius: 4px;
       cursor: pointer;
-      transition: all 0.3s ease;
-      margin-right: 1rem;
-      margin-bottom: 1rem;
+      font-size: 16px;
+      flex: 1;
     }
-    
-    .btn:hover {
-      background: var(--secondary);
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+    button:hover {
+      background-color: #2980b9;
     }
-    
-    .btn-secondary {
-      background: white;
-      color: var(--primary);
-      border: 2px solid var(--primary);
+    button.secondary {
+      background-color: #6c757d;
     }
-    
-    .btn-secondary:hover {
-      background: var(--light);
+    button.secondary:hover {
+      background-color: #5a6268;
     }
-    
-    .btn-danger {
-      background: var(--warning);
+    button.tertiary {
+      background-color: #28a745;
     }
-    
-    .btn-danger:hover {
-      background: #d91a6d;
+    button.tertiary:hover {
+      background-color: #218838;
     }
-    
-    .btn:disabled {
-      background: #ced4da;
-      transform: none;
-      box-shadow: none;
-      cursor: not-allowed;
-    }
-    
-    .serial-info {
-      background: rgba(67, 97, 238, 0.1);
-      padding: 1rem;
-      border-radius: 8px;
-      margin-bottom: 1.5rem;
-      font-weight: 500;
-      color: var(--primary);
-      border-left: 4px solid var(--primary);
-    }
-    
-    #qr-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1.5rem;
-      margin-top: 2rem;
-    }
-    
-    .qr-card {
-      background: white;
-      padding: 1.5rem;
-      border-radius: 12px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    #qr-code {
+      margin: 25px auto;
       text-align: center;
-      transition: all 0.3s ease;
-      animation: fadeIn 0.5s ease-out;
     }
-    
-    .qr-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    }
-    
-    .qr-text {
-      margin-top: 1rem;
-      font-family: 'Courier New', monospace;
+    #qr-data {
+      font-family: monospace;
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 4px;
+      text-align: center;
+      margin-top: 20px;
       word-break: break-all;
-      background: var(--light);
-      padding: 0.75rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
     }
-    
-    .status-bar {
-      padding: 1rem;
-      border-radius: 8px;
-      margin-top: 1.5rem;
+    .status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      background: #e8f8f5;
+      color: #27ae60;
+      text-align: center;
       display: none;
-      animation: fadeIn 0.3s ease-out;
     }
-    
-    .status-success {
-      background: rgba(76, 201, 240, 0.1);
-      color: #4cc9f0;
-      border-left: 4px solid #4cc9f0;
-    }
-    
-    .status-warning {
-      background: rgba(247, 37, 133, 0.1);
-      color: #f72585;
-      border-left: 4px solid #f72585;
-    }
-    
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    
-    @keyframes slideUp {
-      from { 
-        opacity: 0;
-        transform: translateY(20px);
+    @media print {
+      body * {
+        visibility: hidden;
       }
-      to { 
-        opacity: 1;
-        transform: translateY(0);
+      #printable-area, #printable-area * {
+        visibility: visible;
       }
-    }
-    
-    .logo {
-      font-size: 1.8rem;
-      font-weight: 700;
-      margin-bottom: 0.5rem;
-      display: inline-block;
-    }
-    
-    .logo-icon {
-      color: var(--primary);
-      margin-right: 0.5rem;
-    }
-    
-    @media (max-width: 768px) {
-      .container {
-        padding: 1rem;
-      }
-      
-      h1 {
-        font-size: 2rem;
-      }
-      
-      .btn {
+      #printable-area {
+        position: absolute;
+        left: 0;
+        top: 0;
         width: 100%;
-        margin-right: 0;
+      }
+      #qr-data {
+        display: none !important;
+      }
+      .no-print {
+        display: none !important;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <header>
-      <div class="logo">
-        <span class="logo-icon">■</span>QR Code Factory
-      </div>
-      <h1>Batch-Serial QR Generator</h1>
-      <p class="subtitle">Create QR codes with batch and serial numbers</p>
-    </header>
+    <h1>Component QR Generator</h1>
     
-    <main>
-      <div class="card">
-        <div class="serial-info" id="serial-info">
-          Next batch will start from: Batch <strong>10</strong>, Serial <strong>001</strong>
-        </div>
-        
-        <!-- <div class="form-group">
-          <label for="prefix">Component Prefix</label>
-          <input type="text" id="prefix" value="MCP" placeholder="e.g. MCP">
-        </div> -->
-        <!-- Main Components -->
-        <div class="form-group">
-            <label for="prefix">Component Prefix</label>
-            <select id="prefix">
-              <option value="MCP">MCP (Master Control Panel)</option>
-              <option value="MCPB">MCPB (Master Control Panel Board)</option>
-              <option value="MCPT">MCPT (Master Control Panel Tablet)</option>
-              <option value="MCPTR">MCPTR (Master Control Panel Transmitter)</option>
-              <option value="DV">DV (Diverter)</option>
-              <option value="DVB">DVB (Diverter Board)</option>
-              <option value="DVSM">DVSM (Diverter Servo Motor)</option>
-              <option value="DVG">DVG (Diverter Gear Box)</option>
-
-              <option value="DVHSD">DVHSD (Diverter Hybrid Servo Driver)</option>
-
-              <option value="FMG">FMG (Floor Modules General Waste)</option>
-              <option value="FMR">FMR (Floor Modules Recycle)</option>
-              <option value="FM2B">FM2B (Floor Modules 2 Button)</option>
-              <option value="FM4B">FM4B (Floor Modules 4 Button)</option>
-              <option value="FML">FML (Floor Modules Linen Chute)</option>
-              <option value="FMRF">FMRF (Floor Modules RFID)</option>
-              <option value="FMG">FMG (Floor Modules General Waste)</option>
-
-            </select>
-          </div>
-          
-          
-        <!-- <div class="form-group">
-          <label for="version">Version Number</label>
-          <input type="text" id="version" value="V40" placeholder="e.g. V40">
-        </div> -->
-        <!-- Replace the version input field with this select dropdown -->
-         <!-- Version Number -->
-<div class="form-group">
-    <label for="version">Version Number</label>
-    <select id="version" class="form-control">
-      <option value="V1">V1</option>
-      <option value="V2">V2</option>
-      <option value="V3">V3</option>
-      <option value="V4" selected>V4</option>
-      <option value="V4">V4</option>
-      <option value="V6">V6</option>
-      <option value="V7">V7</option>
-      <option value="V8">V8</option>
-      <option value="V9">V9</option>
-      <option value="V10">V10</option>
-      <option value="V11">V11</option>
-      <option value="V12">V12</option>
-      <option value="V13">V13</option>
-      <option value="V14">V14</option>
-      <option value="V15">V15</option>
-      <option value="V16">V16</option>
-      <option value="V17">V17</option>
-      <option value="V18">V18</option>
-      <option value="V19">V19</option>
-      <option value="V20">V20</option>
-
-
-    </select>
+    <!-- Main Component Name and Sub -->
+    <div class="form-group">
+      <label for="component-type">Component Type</label>
+      <select id="component-type">
+        <optgroup label="Master Control Panel">
+          <option value="MCPB">MCPB (Master Control Panel Board)</option>
+          <option value="MCPT">MCPT (Master Control Panel Tablet)</option>
+          <option value="MCPTR">MCPTR (Master Control Panel Transmitter)</option>
+        </optgroup>
+    
+        <optgroup label="Diverter">
+          <option value="DV">DV (Diverter)</option>
+          <option value="DVB">DVB (Diverter Board)</option>
+          <option value="DVSM">DVSM (Diverter Servo Motor)</option>
+          <option value="DVG">DVG (Diverter Gear Box)</option>
+          <option value="DVHSD">DVHSD (Diverter Hybrid Servo Driver)</option>
+        </optgroup>
+    
+        <optgroup label="Floor Modules">
+          <option value="FMG">FMG (Floor Modules General)</option>
+          <option value="FMR">FMR (Floor Modules Recycle)</option>
+          <option value="FM2B">FM2B (Floor Modules 2 Button)</option>
+          <option value="FM4B">FM4B (Floor Modules 4 Button)</option>
+          <option value="FML">FML (Floor Modules Linen Chute)</option>
+          <option value="FMRF">FMRF (Floor Modules RFID)</option>
+        </optgroup>
+      </select>
+    </div>
+    
+    
+    <!-- Version Number -->
+    <div class="form-group">
+      <label for="version">Version</label>
+      <select id="version">
+        <option value="V1">V1</option>
+        <option value="V2" selected>V2</option>
+        <option value="V3">V3</option>
+        <option value="V4">V4</option>
+        <option value="V5">V5</option>
+        <option value="V6">V6</option>
+        <option value="V7">V7</option>
+        <option value="V8">V8</option>
+        <option value="V9">V9</option>
+        <option value="V10">V10</option>
+      </select>
+    </div>
+    
     <!-- Months -->
-  </div>
-        <div class="form-group">
-          <label for="month">Month</label>
-          <select id="month">
-            <option value="01">January (01)</option>
-            <option value="02">February (02)</option>
-            <option value="03">March (03)</option>
-            <option value="04">April (04)</option>
-            <option value="05">May (05)</option>
-            <option value="06">June (06)</option>
-            <option value="07">July (07)</option>
-            <option value="08">August (08)</option>
-            <option value="09">September (09)</option>
-            <option value="10">October (10)</option>
-            <option value="11">November (11)</option>
-            <option value="12">December (12)</option>
-          </select>
-        </div>
-        
-        <!-- <div class="form-group">
-          <label for="year">Year (Last 2 digits)</label>
-          <input type="text" id="year" value="25" placeholder="e.g. 25" maxlength="2">
-        </div> -->
-        <!-- Years -->
-        <div class="form-group">
-            <label for="year">Year (Last 2 digits)</label>
-            <select id="year">
-              <option value="20">2020</option>
-              <option value="21">2021</option>
-              <option value="22">2022</option>
-              <option value="23">2023</option>
-              <option value="24">2024</option>
-              <option value="25" selected>2025</option>
-            </select>
-          </div>
-          
-          
-          
-        <!-- <div class="form-group">
-          <label for="batch">Batch Number (2 digits)</label>
-          <input type="number" id="batch" value="10" min="1" max="99" placeholder="e.g. 10">
-        </div> -->
-        <!-- Batches -->
-        <div class="form-group">
-            <label for="batch">Batch Number (2 digits)</label>
-            <select id="batch">
-              <!-- Options will be added by JavaScript -->
-            </select>
-          </div>
-          
-          <script>
-            const batchSelect = document.getElementById("batch");
-            for (let i = 1; i <= 99; i++) {
-              const value = i.toString().padStart(2, '0'); // Converts 1 -> "01", 9 -> "09", etc.
-              const option = document.createElement("option");
-              option.value = value;
-              option.textContent = value;
-              batchSelect.appendChild(option);
-            }
-          
-            // Optional: Set default selected value
-            batchSelect.value = "10";
-          </script>
-          
-          
-        <div class="form-group">
-          <label for="start-serial">Starting Serial (3 digits)</label>
-          <input type="number" id="start-serial" value="1" min="1" max="999" placeholder="e.g. 1" dis>
-        </div>
-        
-        <div class="form-group">
-          <label for="quantity">Number of Codes</label>
-          <input type="number" id="quantity" value="5" min="1" placeholder="e.g. 5">
-        </div>
-        
-        <button class="btn" onclick="generateSerializedQR()">
-          Generate QR Codes
-        </button>
-        <button class="btn btn-secondary" id="download-btn" onclick="downloadAll()" disabled>
-          Download All as ZIP
-        </button>
-        <button class="btn btn-danger" onclick="resetCounter()">
-          Reset Counter
-        </button>
-        
-        <div class="status-bar status-success" id="status-bar"></div>
-      </div>
-      
-      <div id="qr-container"></div>
-    </main>
+    <div class="form-group">
+      <label for="manufacture-month">Manufacture Month</label>
+      <select id="manufacture-month">
+        <option value="01">January (01)</option>
+        <option value="02">February (02)</option>
+        <option value="03">March (03)</option>
+        <option value="04">April (04)</option>
+        <option value="05">May (05)</option>
+        <option value="06">June (06)</option>
+        <option value="07">July (07)</option>
+        <option value="08">August (08)</option>
+        <option value="09">September (09)</option>
+        <option value="10">October (10)</option>
+        <option value="11">November (11)</option>
+        <option value="12">December (12)</option>
+      </select>
+    </div>
+    
+    <!-- Manufacture Years -->
+    <div class="form-group">
+      <label for="manufacture-year">Manufacture Year</label>
+      <select id="manufacture-year">
+        <option value="20">2020</option>
+        <option value="21" selected>2021</option>
+        <option value="22">2022</option>
+        <option value="23">2023</option>
+        <option value="24">2024</option>
+        <option value="25">2025</option>
+      </select>
+    </div>
+    
+    <!-- Batch Number -->
+    <div class="form-group">
+      <label for="batch-number">Batch Number</label>
+      <select id="batch-number">
+        <!-- Options will be generated by JavaScript -->
+      </select>
+    </div>
+    
+    <!-- Buttons -->
+    <div class="button-group">
+      <button onclick="generateQR()">Generate QR Code</button>
+      <button id="download-btn" class="secondary" onclick="downloadQR()" disabled>Download QR Code</button>
+      <button id="print-btn" class="tertiary no-print" onclick="printQR()" disabled>Print QR Code</button>
+    </div>
+    
+    <div id="printable-area">
+      <div id="qr-code"></div>
+      <div id="qr-data"></div>
+    </div>
+    <div id="status" class="status"></div>
   </div>
 
   <script>
-    const STORAGE_KEY = 'lastSerialNumber';
-    const STORAGE_BATCH_KEY = 'lastBatchNumber';
-    let qrCanvases = [];
-    let qrData = [];
-
-    // Load last used serial and batch numbers or initialize
-    function getNextNumbers() {
-      const lastBatch = localStorage.getItem(STORAGE_BATCH_KEY) || 10;
-      const lastSerial = localStorage.getItem(STORAGE_KEY) || 0;
-      return {
-        batch: parseInt(lastBatch),
-        serial: parseInt(lastSerial) + 1
-      };
+    // Generate batch numbers from 01 to 200
+    const batchSelect = document.getElementById("batch-number");
+    for (let i = 1; i <= 200; i++) {
+      const option = document.createElement("option");
+      option.value = i.toString().padStart(2, '0');
+      option.textContent = option.value;
+      batchSelect.appendChild(option);
     }
+    // Set default batch to 10
+    batchSelect.value = "10";
 
-    function updateSerialInfo() {
-      const { batch, serial } = getNextNumbers();
-      document.getElementById('serial-info').innerHTML = 
-        `Next batch will start from: Batch <strong>${batch.toString().padStart(2, '0')}</strong>, ` +
-        `Serial <strong>${serial.toString().padStart(3, '0')}</strong>`;
-    }
+    let currentQRCanvas = null;
 
-    function showStatus(message, isSuccess = true) {
-      const statusBar = document.getElementById('status-bar');
-      statusBar.textContent = message;
-      statusBar.className = isSuccess ? 'status-bar status-success' : 'status-bar status-warning';
-      statusBar.style.display = 'block';
-      setTimeout(() => statusBar.style.display = 'none', 3000);
-    }
-
-    function generateSerializedQR() {
-      const prefix = document.getElementById('prefix').value.trim();
-      const version = document.getElementById('version').value.trim();
-      const month = document.getElementById('month').value;
-      const year = document.getElementById('year').value.trim();
-      const batch = parseInt(document.getElementById('batch').value);
-      let currentSerial = parseInt(document.getElementById('start-serial').value);
-      const quantity = parseInt(document.getElementById('quantity').value);
-
-      if (!prefix || !version || !year || isNaN(batch)) {
-        showStatus("Please fill in all required fields!", false);
-        return;
-      }
-
-      const container = document.getElementById('qr-container');
-      container.innerHTML = '';
-      qrCanvases = [];
-      qrData = [];
-
-      // Show loading state
-      showStatus(`Generating ${quantity} QR codes...`);
-
-      // Use setTimeout to allow UI to update before heavy processing
-      setTimeout(() => {
-        for (let i = 0; i < quantity; i++) {
-          const serialNumber = (currentSerial + i).toString().padStart(3, '0');
-          const fullCode = `${prefix}${version}${month}${year}-${batch}${serialNumber}`;
-          
-          const qrCard = document.createElement('div');
-          qrCard.className = 'qr-card';
-          
-          const canvas = document.createElement('canvas');
-          QRCode.toCanvas(canvas, fullCode, { width: 150, margin: 1 }, (error) => {
-            if (error) console.error(error);
-          });
-          
-          const textElement = document.createElement('div');
-          textElement.className = 'qr-text';
-          textElement.textContent = fullCode;
-          
-          qrCard.appendChild(canvas);
-          qrCard.appendChild(textElement);
-          container.appendChild(qrCard);
-          
-          qrCanvases.push(canvas);
-          qrData.push(fullCode);
-        }
-
-        // Save the last used numbers
-        localStorage.setItem(STORAGE_BATCH_KEY, batch.toString());
-        localStorage.setItem(STORAGE_KEY, (currentSerial + quantity - 1).toString());
-        document.getElementById('download-btn').disabled = false;
-        updateSerialInfo();
-        showStatus(`Successfully generated ${quantity} QR codes!`);
-      }, 100);
-    }
-
-    function downloadAll() {
-      if (qrCanvases.length === 0) {
-        showStatus("No QR codes to download!", false);
-        return;
-      }
-
-      showStatus("Preparing ZIP file, please wait...");
-      const zip = new JSZip();
-      const folder = zip.folder("qr_codes");
+    function generateQR() {
+      const component = document.getElementById("component-type").value;
+      const version = document.getElementById("version").value;
+      const month = document.getElementById("manufacture-month").value;
+      const year = document.getElementById("manufacture-year").value;
+      const batch = document.getElementById("batch-number").value;
       
-      // Show progress (for large quantities)
-      let processed = 0;
-      const total = qrCanvases.length;
+      // Create the pattern with batch number (e.g., "MCPBV20225-10")
+      const qrContent = `${component}${version}${month}${year}-${batch}`;
       
-      function addToZip(index) {
-        if (index >= total) {
-          // All images processed, generate ZIP
-          zip.generateAsync({type:"blob"}, (metadata) => {
-            if (metadata.percent === 100) {
-              saveAs(content, "qr_codes.zip");
-              showStatus("Download complete! Your ZIP file is ready.");
-            }
-          }).then(function(content) {
-            saveAs(content, "qr_codes.zip");
-            showStatus("Download complete! Your ZIP file is ready.");
-          });
+      // Display the QR code
+      const qrCodeElement = document.getElementById("qr-code");
+      qrCodeElement.innerHTML = "";
+      
+      QRCode.toCanvas(qrContent, { width: 180 }, (error, canvas) => {
+        if (error) {
+          showStatus("Error generating QR code", "error");
           return;
         }
+        qrCodeElement.appendChild(canvas);
+        document.getElementById("qr-data").textContent = qrContent;
+        showStatus("QR code generated!");
         
-        const canvas = qrCanvases[index];
-        const dataUrl = canvas.toDataURL('image/png');
-        const base64Data = dataUrl.split(',')[1];
-        folder.file(`${qrData[index]}.png`, base64Data, {base64: true});
-        
-        processed++;
-        if (processed % 5 === 0 || processed === total) {
-          showStatus(`Processing... ${processed}/${total} QR codes added to ZIP`);
-        }
-        
-        // Process next image with slight delay to prevent UI freeze
-        setTimeout(() => addToZip(index + 1), 50);
+        // Enable download and print buttons and store the canvas
+        document.getElementById("download-btn").disabled = false;
+        document.getElementById("print-btn").disabled = false;
+        currentQRCanvas = canvas;
+      });
+    }
+    
+    function downloadQR() {
+      if (!currentQRCanvas) {
+        showStatus("No QR code to download", "error");
+        return;
       }
       
-      // Start processing
-      addToZip(0);
+      // Create a temporary link to download the canvas as PNG
+      const link = document.createElement('a');
+      const qrContent = document.getElementById("qr-data").textContent;
+      link.download = `${qrContent}.png`;
+      link.href = currentQRCanvas.toDataURL('image/png');
+      link.click();
+      
+      showStatus("QR code downloaded!");
     }
-
-    function resetCounter() {
-      if (confirm("Are you sure you want to reset the batch and serial counters?")) {
-        localStorage.removeItem(STORAGE_KEY);
-        localStorage.removeItem(STORAGE_BATCH_KEY);
-        document.getElementById('batch').value = 10;
-        document.getElementById('start-serial').value = 1;
-        updateSerialInfo();
-        showStatus("Batch and serial counters have been reset");
+    
+    function printQR() {
+      if (!currentQRCanvas) {
+        showStatus("No QR code to print", "error");
+        return;
       }
+      
+      window.print();
     }
-
-    // Initialize on page load
-    updateSerialInfo();
+    
+    function showStatus(message, type = "info") {
+      const statusEl = document.getElementById("status");
+      statusEl.textContent = message;
+      statusEl.style.display = "block";
+      statusEl.style.backgroundColor = type === "error" ? "#f8d7da" : "#e8f8f5";
+      statusEl.style.color = type === "error" ? "#721c24" : "#27ae60";
+      
+      // Hide status after 3 seconds
+      setTimeout(() => {
+        statusEl.style.display = "none";
+      }, 3000);
+    }
   </script>
 </body>
 </html>
