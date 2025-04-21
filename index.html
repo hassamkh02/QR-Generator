@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,38 +14,76 @@
       padding: 20px;
       background-color: #f5f5f5;
     }
+
+    .company-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #3498db;
+    }
+
+    .company-logo {
+      width: 60px;
+      height: 60px;
+      margin-right: 15px;
+      background-color: #1a4913;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 24px;
+    }
+
+    .company-name {
+      font-size: 24px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
     .container {
       background: white;
       padding: 25px;
       border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
+
     h1 {
       color: #2c3e50;
       text-align: center;
       margin-bottom: 25px;
+      font-size: 20px;
     }
+
     .form-group {
       margin-bottom: 20px;
     }
+
     label {
       display: block;
       margin-bottom: 8px;
       font-weight: bold;
       color: #34495e;
     }
-    select, input {
+
+    select,
+    input {
       width: 100%;
       padding: 10px;
       border: 1px solid #ddd;
       border-radius: 4px;
       font-size: 16px;
     }
+
     .button-group {
       display: flex;
       gap: 10px;
       margin-top: 10px;
     }
+
     button {
       background-color: #3498db;
       color: white;
@@ -55,25 +94,32 @@
       font-size: 16px;
       flex: 1;
     }
+
     button:hover {
       background-color: #2980b9;
     }
+
     button.secondary {
       background-color: #6c757d;
     }
+
     button.secondary:hover {
       background-color: #5a6268;
     }
+
     button.tertiary {
       background-color: #28a745;
     }
+
     button.tertiary:hover {
       background-color: #218838;
     }
+
     #qr-code {
       margin: 25px auto;
       text-align: center;
     }
+
     #qr-data {
       font-family: monospace;
       background: #f8f9fa;
@@ -83,6 +129,7 @@
       margin-top: 20px;
       word-break: break-all;
     }
+
     .status {
       margin-top: 15px;
       padding: 10px;
@@ -92,64 +139,75 @@
       text-align: center;
       display: none;
     }
+
     @media print {
       body * {
         visibility: hidden;
       }
-      #printable-area, #printable-area * {
+
+      #printable-area,
+      #printable-area * {
         visibility: visible;
       }
+
       #printable-area {
         position: absolute;
         left: 0;
         top: 0;
         width: 100%;
       }
+
       #qr-data {
         display: none !important;
       }
+
       .no-print {
         display: none !important;
       }
+
+      .company-header {
+        display: none !important;
+      }
+    }
+
+    .company-a-fields {
+      display: block;
+    }
+
+    .company-b-fields {
+      display: none;
     }
   </style>
 </head>
+
 <body>
+  <div class="company-header no-print">
+    <div class="company-logo">CHG</div>
+    <div class="company-name">Cleantech Hub Grounds</div>
+  </div>
+
   <div class="container">
     <h1>Component QR Generator</h1>
-    
+
+    <!-- Company Selection -->
+    <div class="form-group">
+      <label for="company">Company</label>
+      <select id="company" onchange="updateFormFields()">
+        <option value="A">Cleantech Hub Grounds</option>
+        <option value="B">Chab Industrial Co LLC</option>
+      </select>
+    </div>
+
     <!-- Main Component Name and Sub -->
     <div class="form-group">
       <label for="component-type">Component Type</label>
       <select id="component-type">
-        <optgroup label="Master Control Panel">
-          <option value="MCPB">MCPB (Master Control Panel Board)</option>
-          <option value="MCPT">MCPT (Master Control Panel Tablet)</option>
-          <option value="MCPTR">MCPTR (Master Control Panel Transmitter)</option>
-        </optgroup>
-    
-        <optgroup label="Diverter">
-          <option value="DV">DV (Diverter)</option>
-          <option value="DVB">DVB (Diverter Board)</option>
-          <option value="DVSM">DVSM (Diverter Servo Motor)</option>
-          <option value="DVG">DVG (Diverter Gear Box)</option>
-          <option value="DVHSD">DVHSD (Diverter Hybrid Servo Driver)</option>
-        </optgroup>
-    
-        <optgroup label="Floor Modules">
-          <option value="FMG">FMG (Floor Modules General)</option>
-          <option value="FMR">FMR (Floor Modules Recycle)</option>
-          <option value="FM2B">FM2B (Floor Modules 2 Button)</option>
-          <option value="FM4B">FM4B (Floor Modules 4 Button)</option>
-          <option value="FML">FML (Floor Modules Linen Chute)</option>
-          <option value="FMRF">FMRF (Floor Modules RFID)</option>
-        </optgroup>
+        <!-- Options will be generated by JavaScript based on company selection -->
       </select>
     </div>
-    
-    
-    <!-- Version Number -->
-    <div class="form-group">
+
+    <!-- Version Number (Company A only) -->
+    <div class="form-group company-a-fields">
       <label for="version">Version</label>
       <select id="version">
         <option value="V1">V1</option>
@@ -164,9 +222,9 @@
         <option value="V10">V10</option>
       </select>
     </div>
-    
-    <!-- Months -->
-    <div class="form-group">
+
+    <!-- Months (Company A only) -->
+    <div class="form-group company-a-fields">
       <label for="manufacture-month">Manufacture Month</label>
       <select id="manufacture-month">
         <option value="01">January (01)</option>
@@ -183,9 +241,9 @@
         <option value="12">December (12)</option>
       </select>
     </div>
-    
-    <!-- Manufacture Years -->
-    <div class="form-group">
+
+    <!-- Manufacture Years (Company A only) -->
+    <div class="form-group company-a-fields">
       <label for="manufacture-year">Manufacture Year</label>
       <select id="manufacture-year">
         <option value="20">2020</option>
@@ -196,22 +254,22 @@
         <option value="25">2025</option>
       </select>
     </div>
-    
-    <!-- Batch Number -->
-    <div class="form-group">
+
+    <!-- Batch Number (Company A only) -->
+    <div class="form-group company-a-fields">
       <label for="batch-number">Batch Number</label>
       <select id="batch-number">
         <!-- Options will be generated by JavaScript -->
       </select>
     </div>
-    
+
     <!-- Buttons -->
     <div class="button-group">
       <button onclick="generateQR()">Generate QR Code</button>
       <button id="download-btn" class="secondary" onclick="downloadQR()" disabled>Download QR Code</button>
       <button id="print-btn" class="tertiary no-print" onclick="printQR()" disabled>Print QR Code</button>
     </div>
-    
+
     <div id="printable-area">
       <div id="qr-code"></div>
       <div id="qr-data"></div>
@@ -220,33 +278,376 @@
   </div>
 
   <script>
-    // Generate batch numbers from 01 to 200
+    // Component options for different companies
+    const companyComponents = {
+      A: {
+        "Master Control Panel": [
+        { value: "MCP", text: "MCP (Master Control Panel)" },
+
+          { value: "MCPB", text: "MCPB (Master Control Panel Board)" },
+          { value: "MCPT", text: "MCPT (Master Control Panel Tablet)" },
+          { value: "MCPTR", text: "MCPTR (Master Control Panel Transmitter)" }
+        ],
+        "Diverter": [
+          { value: "DV", text: "DV (Diverter)" },
+          { value: "DVB", text: "DVB (Diverter Board)" },
+          { value: "DVSM", text: "DVSM (Diverter Servo Motor)" },
+          { value: "DVG", text: "DVG (Diverter Gear Box)" },
+          { value: "DVHSD", text: "DVHSD (Diverter Hybrid Servo Driver)" }
+        ],
+        "Floor Modules": [
+          { value: "FMG", text: "FMG (Floor Modules General)" },
+          { value: "FMR", text: "FMR (Floor Modules Recycle)" },
+          { value: "FM2B", text: "FM2B (Floor Modules 2 Button)" },
+          { value: "FM4B", text: "FM4B (Floor Modules 4 Button)" },
+          { value: "FML", text: "FML (Floor Modules Linen Chute)" },
+          { value: "FMRF", text: "FMRF (Floor Modules RFID)" }
+        ]
+      },
+      B: {
+
+        "DUCT COMPONENTS": [
+          { value: "SS SHEET 304", text: "SS SHEET 304" },
+          { value: "SS SHEET 316", text: "SS SHEET 316" },
+          { value: "Full Pipe (500mm)", text: "Full Pipe (500mm)" },
+          { value: "Full Pipe (600mm)", text: "Full Pipe (600mm)" },
+          { value: "Full Pipe (700mm)", text: "Full Pipe (700mm)" },
+          { value: "Full Pipe (800mm)", text: "Full Pipe (800mm)" },
+          { value: "Pipe Door (Standard)", text: "Pipe Door (Standard)" },
+          { value: "Pipe Door (Big Door)", text: "Pipe Door (Big Door)" },
+          { value: "Sanitizing Access Unit (Housing Unit (Model 1))", text: "Sanitizing Access Unit (Housing Unit (Model 1))" },
+          { value: "Brush Access Unit (Brush Sanitizing Housing Unit (Model 1))", text: "Brush Access Unit (Brush Sanitizing Housing Unit (Model 1))" },
+          { value: "Reducer", text: "Reducer" },
+          { value: "Fan Housing Unit", text: "Fan Housing Unit" },
+          { value: "Elbow (offset) Garbage Chute", text: "Elbow (offset) Garbage Chute" },
+          { value: "Elbow (offset) Linen Chute", text: "Elbow (offset) Linen Chute" },
+          { value: "Vent Pipe \"Vertical Pipe\"", text: "Vent Pipe \"Vertical Pipe\"" },
+          { value: "Vent Pipe \"Y\" Pipe", text: "Vent Pipe \"Y\" Pipe" },
+          { value: "Vent Pipe \"T\" Pipe", text: "Vent Pipe \"T\" Pipe" },
+          { value: "Vent Pipe \"90 Degree\" Pipe", text: "Vent Pipe \"90 Degree\" Pipe" }
+
+        ],
+        "DUCT ACCESSORIES": [
+          { value: "Adjustment Pipe", text: "Adjustment Pipe" },
+          { value: "Single Support Frame (50x50x6)", text: "Single Support Frame (50x50x6)" },
+          { value: "Single Support Frame (40x40x6)", text: "Single Support Frame (40x40x6)" },
+          { value: "Corner Support Frame (50x50x6)", text: "Corner Support Frame (50x50x6)" },
+          { value: "Corner Support Frame (40x40x6)", text: "Corner Support Frame (40x40x6)" },
+          { value: "Ring Connection", text: "Ring Connection" },
+          { value: "Dual Chute Support Frame (40x40x6)", text: "Dual Chute Support Frame (40x40x6)" },
+          { value: "Dual Chute Support Frame (50x50x6)", text: "Dual Chute Support Frame (50x50x6)" },
+          { value: "Anchor Bolt", text: "Anchor Bolt" },
+          { value: "(Elsie) Fusible Link", text: "(Elsie) Fusible Link" },
+          { value: "Sound Damping Coating (DC1050a)", text: "Sound Damping Coating (DC1050a)" },
+          { value: "Afico Thermal Insulation ( Face Duct Wrap Insulation)", text: "Afico Thermal Insulation ( Face Duct Wrap Insulation)" },
+          { value: "Vent Cravat (27 is for 270mm)", text: "Vent Cravat (27 is for 270mm)" },
+          { value: "Vent Cravat(35 is for 350mm)", text: "Vent Cravat(35 is for 350mm)" },
+          { value: "Junction Box", text: "Junction Box" },
+          { value: "Elbow Support", text: "Elbow Support" },
+          { value: "Wall Angle(Single Chute)", text: "Wall Angle(Single Chute)" },
+          { value: "Wall Angle(Dual Chute)", text: "Wall Angle(Dual Chute)" },
+          { value: "Isolator Pads", text: "Isolator Pads" },
+          { value: "Flange (For AWCS)", text: "Flange (For AWCS)" },
+          { value: "Solenoid Box", text: "Solenoid Box" },
+          { value: "Power Booster", text: "Power Booster" },
+          { value: "Rubber Pads", text: "Rubber Pads" },
+          { value: "Smoke Detector", text: "Smoke Detector" },
+
+        ],
+        "HOPPER DOORS": [
+          { value: "Hopper Door (Single Indicator Size 73)", text: "Hopper Door (Single Indicator Size 73)" },
+          { value: "Hopper Door (Dual Indicator Size 73)", text: "Hopper Door (Dual Indicator Size 73)" },
+          { value: "Hopper Door (Floor Module Size 73)", text: "Hopper Door (Floor Module Size 73)" },
+          { value: "Hopper Door (RFID Size 73)", text: "Hopper Door (RFID Size 73)" },
+          { value: "Linen Door (Single Indicator Size 73)", text: "Linen Door (Single Indicator Size 73)" },
+          { value: "Linen Door (Double Indicator Size 73)", text: "Linen Door (Double Indicator Size 73)" },
+          { value: "Linen Door (Floor Module Size 73)", text: "Linen Door (Floor Module Size 73)" },
+          { value: "Linen Door (RFID Size 73)", text: "Linen Door (RFID Size 73)" },
+          { value: "Hopper Door (Single Indicator Size 94)", text: "Hopper Door (Single Indicator Size 94)" },
+          { value: "Hopper Door (Dual Indicator Size 94)", text: "Hopper Door (Dual Indicator Size 94)" },
+          { value: "Hopper Door (Floor Module Size 94)", text: "Hopper Door (Floor Module Size 94)" },
+          { value: "Hopper Door (RFID Size 94)", text: "Hopper Door (RFID Size 94)" },
+          { value: "Linen Door (Single Indicator Size 94)", text: "Linen Door (Single Indicator Size 94)" },
+          { value: "Linen Door (Double Indicator Size 94)", text: "Linen Door (Double Indicator Size 94)" },
+          { value: "Linen Door (Floor Module Size 94)", text: "Linen Door (Floor Module Size 94)" },
+          { value: "Linen Door (RFID Size 94)", text: "Linen Door (RFID Size 94)" }
+
+        ],
+        "MASTER PANEL": [
+          { value: "Linen Chute Master Panel", text: "Linen Chute" },
+          { value: "General Waste Garbage Chute Master Panel", text: "General Waste Garbage Chute" },
+          { value: "Recycling Garbage Chute Master Panel", text: "Recycling Garbage Chute" },
+          { value: "General Waste Garbage Chute - AWCS Master Panel", text: "General Waste Garbage Chute - AWCS" },
+          { value: "Recycling Garbage Chute-AWCS Master Panel", text: "Recycling Garbage Chute-AWCS" }
+
+        ],
+        "ODO PANEL": [
+          { value: "Linen Chute", text: "Linen Chute" },
+          { value: "General Waste Garbage Chute", text: "General Waste Garbage Chute" },
+          { value: "Recycling Garbage Chute", text: "Recycling Garbage Chute" },
+          { value: "General Waste Garbage Chute - AWCS", text: "General Waste Garbage Chute - AWCS" },
+          { value: "Recycling Garbage Chute-AWCS", text: "Recycling Garbage Chute-AWCS" }
+
+        ],
+        "CHUTE ACCESSORIES": [
+          // Mechanical Access
+          { value: "Mechanical Access Door (Single 560mm x560mm)", text: "Mechanical Access Door (Single 560mm x560mm)" },
+          { value: "Mechanical Access Door (Double 720mmx720mm)", text: "Mechanical Access Door (Double 720mmx720mm)" },
+          { value: "Sanitizing Tank 3.5L", text: "Sanitizing Tank 3.5L" },
+          { value: "Sanitizing Tank 5L", text: "Sanitizing Tank 5L" },
+          { value: "Solenoid Valve", text: "Solenoid Valve" },
+          { value: "Gate Valve", text: "Gate Valve" },
+          { value: "Wash Board", text: "Wash Board" },
+          { value: "Brush Control Panel", text: "Brush Control Panel" },
+          { value: "Brush Motor", text: "Brush Motor" },
+          // Fire CUT-OFF Door
+          { value: "Fire Cut-Off Door General Waste Chute", text: "Fire Cut-Off Door General Waste Chute" },
+          { value: "Fire Cut-Off Door Recycling Waste Chute", text: "Fire Cut-Off Door Recycling Waste Chute" },
+          { value: "Fire Cut-Off Door Linen Chute", text: "Fire Cut-Off Door Linen Chute" },
+          // Sprinklers
+          { value: "Pressure Nozzle", text: "Pressure Nozzle" },
+          { value: "Cleaning Sprinkler", text: "Cleaning Sprinkler" },
+          { value: "Fire Fighting Sprinkler (Viking)", text: "Fire Fighting Sprinkler (Viking)" },
+          { value: "Fire Fighting Sprinkler (Shield)", text: "Fire Fighting Sprinkler (Shield)" },
+          { value: "KDK(10 Inches)", text: "KDK(10 Inches)" },
+          { value: "KDK(12 Inches)", text: "KDK(12 Inches)" },
+          { value: "KDK(14 Inches)", text: "KDK(14 Inches)" },
+          { value: "KDK(16 Inches)", text: "KDK(16 Inches)" },
+          { value: "KDK(18 Inches)", text: "KDK(18 Inches)" },
+
+          // System Modules
+          { value: "Diverter Module", text: "Diverter Module" },
+          { value: "Wash Module", text: "Wash Module" },
+        ],
+        "WASTE EQUIPMENT": [
+
+          { value: "1.1m3 Galvanized Trolley", text: "1.1m3 Galvanized Trolley" },
+          { value: "2.5m3 Galvanized Trolley", text: "2.5m3 Galvanized Trolley" },
+          { value: "4.5m3 Galvanized Trolley", text: "4.5m3 Galvanized Trolley" },
+          { value: "1.1 Stainless Steel Trolley", text: "1.1 Stainless Steel Trolley" },
+          { value: "700mm Stainless Steel Trolley", text: "700mm Stainless Steel Trolley" },
+          { value: "Garbage Compactor", text: "Garbage Compactor" },
+          { value: "Bailer Machine", text: "Bailer Machine" },
+          { value: "Container Packer", text: "Container Packer" },
+          { value: "Bisorter", text: "Bisorter" },
+          { value: "Trisorter", text: "Trisorter" },
+
+        ],
+      }
+    };
+
+    // Component to fixed number mapping for Company B
+    const companyBFixedNumbers = {
+      // Duct Components
+      "SS SHEET 304": "1SS04-",
+      "SS SHEET 316": "1SS16-",
+      "Full Pipe (500mm)": "1FP50-",
+      "Full Pipe (600mm)": "1FP60-",
+      "Full Pipe (700mm)": "1FP70-",
+      "Full Pipe (800mm)": "1FP80-",
+      "Pipe Door (Standard)": "1PD73-",
+      "Pipe Door (Big Door)": "1PD94-",
+      "Sanitizing Access Unit (Housing Unit (Model 1))": "1SU01-",
+      "Brush Access Unit (Brush Sanitizing Housing Unit (Model 1))": "1BU01-",
+      "Reducer": "1RD01-",
+
+      "Fan Housing Unit": "1FU27-",
+      "Elbow (offset) Garbage Chute": "1EB01-",
+      "Elbow (offset) Linen Chute": "1EB02-",
+
+      "Vent Pipe \"Vertical Pipe\"": "1VPVP-",
+      "Vent Pipe \"Y\" Pipe": "1VPYP-",
+      "Vent Pipe \"T\" Pipe": "1VPTP-",
+      "Vent Pipe \"90 Degree\" Pipe": "1VP90-",
+      //Master Panel Components
+      "Linen Chute Master Panel": "3LCH4-",
+      "General Waste Garbage Chute Master Panel": "3GWH4-",
+      "Recycling Garbage Chute Master Panel": "3RCH4-",
+      "General Waste Garbage Chute - AWCS Master Panel": "3AWH4-",
+      "Recycling Garbage Chute-AWCS Master Panel": "3RWH4-",
+      //Hopper Doors
+      "Hopper Door (Single Indicator Size 73)": "2HSI73-",
+      "Hopper Door (Dual Indicator Size 73)": "2HDI73-",
+      "Hopper Door (Floor Module Size 73)": "2HFM73-",
+      "Hopper Door (RFID Size 73)": "2HRF73-",
+      // Hopper Doors Linen
+      "Linen Door (Single Indicator Size 73)": "2LSI73-",
+      "Linen Door (Double Indicator Size 73)": "2LDI73-",
+      "Linen Door (Floor Module Size 73)": "2LFM73-",
+      "Linen Door (RFID Size 73)": "2LRF73-",
+
+      "Hopper Door (Single Indicator Size 94)": "2HSI94-",
+      "Hopper Door (Dual Indicator Size 94)": "2HDI94-",
+      "Hopper Door (Floor Module Size 94)": "2HFM94-",
+      "Hopper Door (RFID Size 94)": "2HRF94-",
+
+      "Linen Door (Single Indicator Size 94)": "2LSI94-",
+      "Linen Door (Double Indicator Size 94)": "2LDI94-",
+      "Linen Door (Floor Module Size 94)": "2LFM94-",
+      "Linen Door (RFID Size 94)": "2LRF94-",
+      //ODO Panel
+      "Linen Chute": "3LCCP-",
+      "General Waste Garbage Chute": "3GWCP-",
+      "Recycling Garbage Chute": "3RCCP-",
+      "General Waste Garbage Chute - AWCS": "3AWCP-",
+      "Recycling Garbage Chute-AWCS": "3RWCP-",
+      //Chute Accessories
+
+      //Mechanical Access
+      "Mechanical Access Door (Single 560mm x560mm)": "4MDSI-",
+      "Mechanical Access Door (Double 720mmx720mm)": "4MDDB-",
+      "Sanitizing Tank 3.5L": "4ST35-",
+      "Sanitizing Tank 5L": "4ST50-",
+     
+      "Gate Valve": "4GV-",
+      "Wash Board": "4WBH4-",
+      "Brush Control Panel": "4BPH4-",
+      "Brush Motor": "4BMH4-",
+
+      //Fire Cut-off Door
+      "Fire Cut-Off Door General Waste Chute": "4FSGW-",
+      "Fire Cut-Off Door Recycling Waste Chute": "4FSRW-",
+      "Fire Cut-Off Door Linen Chute": "4FSLC-",
+      //Sprinklers
+      "Pressure Nozzle": "4PN12-",
+      "Cleaning Sprinkler": "4CS12-",
+
+
+      //System Modules
+      "Diverter Module": "4DMH4-",
+      "Wash Module": "4WMH4-",
+
+      //Waste Equipment
+      "1.1m3 Galvanized Trolley": "5GI11-",
+      "2.5m3 Galvanized Trolley": "5GI25-",
+      "4.5m3 Galvanized Trolley": "5GI45-",
+      "1.1 Stainless Steel Trolley": "5SS11-",
+      "700mm Stainless Steel Trolley": "5SS70-",
+      "Garbage Compactor": "5GC10-",
+      "Bailer Machine": "5BM10-",
+      "Container Packer": "5CP11-",
+      "Bisorter": "5ARBS-",
+      "Trisorter": "5ARTS-",
+      //Duct Accessories
+      "Adjustment Pipe": "1AAP94-",
+      "Single Support Frame (50x50x6)": "1ASF50-",
+      "Single Support Frame (40x40x6)": "1ASF40-",
+      "Single Support Frame (50x50x6)": "1ACF50-",
+      "Corner Support Frame (50x50x6)": "1ACF50-",
+      "Corner Support Frame (40x40x6)": "1ACF40-",
+      "Ring Connection": "1ARC01-",
+      "Dual Chute Support Frame (40x40x6)": "1ADC40-",
+      "Dual Chute Support Frame (50x50x6)": "1ADC50-",
+      "Anchor Bolt": "1AAB-",
+      "(Elsie) Fusible Link": "1AFL78-",
+      "Sound Damping Coating (DC1050a)": "1ADPDC-",
+      "Afico Thermal Insulation ( Face Duct Wrap Insulation)": "1AAFTI-",
+      "Vent Cravat (27 is for 270mm)": "1AVC27-",
+      "Vent Cravat(35 is for 350mm)": "1AVC35-",
+      "Junction Box": "1AVPJB-",
+      "Elbow Support": "1AELSP-",
+      "Wall Angle(Single Chute)": "1AWASC-",
+      "Wall Angle(Dual Chute)": "1AWADC-",
+      "Isolator Pads": "1AIP-",
+      "Flange (For AWCS)": "1AFLAW-",
+      "Solenoid Box": "1ASB-",
+      "Power Booster": "1APB-",
+      "Rubber Pads": "1ARP-",
+      "Smoke Detector": "1ASDH4-",
+     
+      //For Fan using Supplier Code
+
+      "KDK(10 Inches)": "25GSE-",
+      "KDK(12 Inches)": "30GSE-",
+      "KDK(14 Inches)": "35GSE-",
+      "KDK(16 Inches)": "40GSE-",
+      "KDK(18 Inches)": "45GSE-",
+
+      //WASTE EQUIPMENT using Supplier Code
+      //For Sprinklers using Supplier Code
+      "Fire Fighting Sprinkler (Viking)": "VK102-",
+      "Fire Fighting Sprinkler (Shield)": "SD1010-",
+ //For Chute Accessories  & Mechanical Access using Supplier Code
+      "Solenoid Valve": "YAD12-",
+    };
+
+    // Generate batch numbers from 1 to 200 without leading zero
     const batchSelect = document.getElementById("batch-number");
     for (let i = 1; i <= 200; i++) {
       const option = document.createElement("option");
-      option.value = i.toString().padStart(2, '0');
+      option.value = i.toString();  // No padding for numbers less than 10
       option.textContent = option.value;
       batchSelect.appendChild(option);
     }
     // Set default batch to 10
     batchSelect.value = "10";
 
+
+    // Initialize component options based on default company selection
+    updateFormFields();
+
+    function updateFormFields() {
+      const company = document.getElementById("company").value;
+
+      // Update component options
+      const componentSelect = document.getElementById("component-type");
+      componentSelect.innerHTML = "";
+
+      const components = companyComponents[company];
+      for (const [groupName, groupItems] of Object.entries(components)) {
+        if (Object.keys(components).length > 1) {
+          // Add optgroup if there are multiple groups
+          const optgroup = document.createElement("optgroup");
+          optgroup.label = groupName;
+          componentSelect.appendChild(optgroup);
+
+          groupItems.forEach(item => {
+            const option = document.createElement("option");
+            option.value = item.value;
+            option.textContent = item.text;
+            optgroup.appendChild(option);
+          });
+        } else {
+          // Add options directly if only one group
+          groupItems.forEach(item => {
+            const option = document.createElement("option");
+            option.value = item.value;
+            option.textContent = item.text;
+            componentSelect.appendChild(option);
+          });
+        }
+      }
+
+      // Show/hide additional fields based on company
+      const companyAFields = document.querySelectorAll('.company-a-fields');
+      companyAFields.forEach(field => {
+        field.style.display = company === 'A' ? 'block' : 'none';
+      });
+    }
+
     let currentQRCanvas = null;
 
     function generateQR() {
+      const company = document.getElementById("company").value;
       const component = document.getElementById("component-type").value;
-      const version = document.getElementById("version").value;
-      const month = document.getElementById("manufacture-month").value;
-      const year = document.getElementById("manufacture-year").value;
-      const batch = document.getElementById("batch-number").value;
-      
-      // Create the pattern with batch number (e.g., "MCPBV20225-10")
-      const qrContent = `${component}${version}${month}${year}-${batch}`;
-      
+
+      let qrContent;
+
+      if (company === 'A') {
+        const version = document.getElementById("version").value;
+        const month = document.getElementById("manufacture-month").value;
+        const year = document.getElementById("manufacture-year").value;
+        const batch = document.getElementById("batch-number").value;
+        qrContent = `${component}${version}${month}${year}-${batch}`;
+      } else {
+        // Company B format: Just use the fixed number
+        qrContent = companyBFixedNumbers[component] || "0000"; // Default if not found
+      }
+
       // Display the QR code
       const qrCodeElement = document.getElementById("qr-code");
       qrCodeElement.innerHTML = "";
-      
+
       QRCode.toCanvas(qrContent, { width: 180 }, (error, canvas) => {
         if (error) {
           showStatus("Error generating QR code", "error");
@@ -255,46 +656,46 @@
         qrCodeElement.appendChild(canvas);
         document.getElementById("qr-data").textContent = qrContent;
         showStatus("QR code generated!");
-        
+
         // Enable download and print buttons and store the canvas
         document.getElementById("download-btn").disabled = false;
         document.getElementById("print-btn").disabled = false;
         currentQRCanvas = canvas;
       });
     }
-    
+
     function downloadQR() {
       if (!currentQRCanvas) {
         showStatus("No QR code to download", "error");
         return;
       }
-      
+
       // Create a temporary link to download the canvas as PNG
       const link = document.createElement('a');
       const qrContent = document.getElementById("qr-data").textContent;
       link.download = `${qrContent}.png`;
       link.href = currentQRCanvas.toDataURL('image/png');
       link.click();
-      
+
       showStatus("QR code downloaded!");
     }
-    
+
     function printQR() {
       if (!currentQRCanvas) {
         showStatus("No QR code to print", "error");
         return;
       }
-      
+
       window.print();
     }
-    
+
     function showStatus(message, type = "info") {
       const statusEl = document.getElementById("status");
       statusEl.textContent = message;
       statusEl.style.display = "block";
       statusEl.style.backgroundColor = type === "error" ? "#f8d7da" : "#e8f8f5";
       statusEl.style.color = type === "error" ? "#721c24" : "#27ae60";
-      
+
       // Hide status after 3 seconds
       setTimeout(() => {
         statusEl.style.display = "none";
@@ -302,4 +703,5 @@
     }
   </script>
 </body>
+
 </html>
